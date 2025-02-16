@@ -33,8 +33,8 @@ public class DashBoardPage {
         return Integer.parseInt(value);
     }
 
-    public TransferMoneyPage chooseCardForTransfer(int index) { //выбор карты для пополнения
-        $$("[data-test-id='action-deposit']").get(index).click();
+    public TransferMoneyPage chooseCardForTransfer(String cardId) { //выбор карты для пополнения
+        cards.findBy(Condition.attribute("data-test-id", cardId)).$("[data-test-id='action-deposit'] button").click();
         return new TransferMoneyPage();
     }
 
