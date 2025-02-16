@@ -29,35 +29,41 @@ public class MoneyTransferTest {
         var firstCardBalance = dashBoardPage.getCardBalance(0);
         var secondCardBalance = dashBoardPage.getCardBalance(1);
 
-        int summaToDeposit = 200;
-
+        int summaToDeposit = DataHelper.generationValidAmount(secondCardBalance);
         int firstCardBalanceExpected = firstCardBalance + summaToDeposit;
         int secondCardBalanceExpected = secondCardBalance - summaToDeposit;
 
-        dashBoardPage.chooseCardForTransfer(0);
-        var transferMoneyPage = new TransferMoneyPage();
+        var transferMoneyPage = dashBoardPage.chooseCardForTransfer(0);
         transferMoneyPage.moneyTransfer(summaToDeposit, secondCardNumber);
 
         Assertions.assertEquals(firstCardBalanceExpected, dashBoardPage.getCardBalance(0));
         Assertions.assertEquals(secondCardBalanceExpected, dashBoardPage.getCardBalance(1));
-
-
-//        $("[data-test-id='login'] input").setValue(info.getLogin());
-//        $("[data-test-id='password'] input").setValue(info.getPassword());
-//        $("[data-test-id ='action-login']").click();
-
-//        $("[data-test-id='code'] input").setValue(verificationCode.getCode());
-//        $("[data-test-id='action-verify']").click();
-//        $("[data-test-id='dashboard']").should(Condition.visible);
-//        $("[data-test-id='92df3f1c-a033-48e6-8390-206f6b1f56c0'] button").click();
-//        $$(".list__item")
-//                .findBy(Condition.attribute("data-test-id", "92df3f1c-a033-48e6-8390-206f6b1f56c0"))
-//                .$("[data-test-id='action-deposit'] button").click();
-//        $$("[data-test-id='action-deposit']").get(0).click();
     }
 
     @Test
-    void testTransferToFirstFromSecondCardOverBalance() {     // перевод на первую со второй сверх доступного баланса - получаем отрицательный баланс на второй
+    void testTransferToSecondFromFirstCard() {  // перевод на вторую с первой
+        String firstCardNumber = DataHelper.getFirstCardInfo().getNumber();
+        var info = DataHelper.getAuthInfo();
+        var verificationCode = DataHelper.getVerificationCodeFor(info);
+        var loginPage = new LoginPage();
+        var verificationPage = loginPage.validLogin(info);
+        var dashBoardPage = verificationPage.validVerify(verificationCode);
+        var firstCardBalance = dashBoardPage.getCardBalance(0);
+        var secondCardBalance = dashBoardPage.getCardBalance(1);
+
+        int summaToDeposit = DataHelper.generationValidAmount(firstCardBalance);
+        int firstCardBalanceExpected = firstCardBalance - summaToDeposit;
+        int secondCardBalanceExpected = secondCardBalance + summaToDeposit;
+
+        var transferMoneyPage = dashBoardPage.chooseCardForTransfer(1);
+        transferMoneyPage.moneyTransfer(summaToDeposit, firstCardNumber);
+
+        Assertions.assertEquals(firstCardBalanceExpected, dashBoardPage.getCardBalance(0));
+        Assertions.assertEquals(secondCardBalanceExpected, dashBoardPage.getCardBalance(1));
+    }
+
+    @Test
+    void testTransferToFirstFromSecondCardOverBalance() {     // перевод на первую со второй сверх доступного баланса
         String secondCardNumber = DataHelper.getSecondCardInfo().getNumber();
         var info = DataHelper.getAuthInfo();
         var verificationCode = DataHelper.getVerificationCodeFor(info);
@@ -67,44 +73,13 @@ public class MoneyTransferTest {
         var firstCardBalance = dashBoardPage.getCardBalance(0);
         var secondCardBalance = dashBoardPage.getCardBalance(1);
 
-        int summaToDeposit = 20_000;
-
+        int summaToDeposit = DataHelper.generationInvalidAmount(secondCardBalance);
         int firstCardBalanceExpected = firstCardBalance + summaToDeposit;
         int secondCardBalanceExpected = secondCardBalance - summaToDeposit;
 
-        dashBoardPage.chooseCardForTransfer(0);
-        var transferMoneyPage = new TransferMoneyPage();
+        var transferMoneyPage = dashBoardPage.chooseCardForTransfer(0);
         transferMoneyPage.moneyTransfer(summaToDeposit, secondCardNumber);
 
-        Assertions.assertEquals(firstCardBalanceExpected, dashBoardPage.getCardBalance(0));
-        Assertions.assertEquals(secondCardBalanceExpected, dashBoardPage.getCardBalance(1));
+        transferMoneyPage.findErrorMessage();
     }
-
-    @Test
-    void testTransferToSecondFromFirstCard() {  // перевод на вторую с первой
-//        String secondCardNumber = DataHelper.getSecondCardInfo().getNumber();
-        String firstCardNumber = DataHelper.getFirstCardInfo().getNumber();
-
-        var info = DataHelper.getAuthInfo();
-        var verificationCode = DataHelper.getVerificationCodeFor(info);
-        var loginPage = new LoginPage();
-        var verificationPage = loginPage.validLogin(info);
-        var dashBoardPage = verificationPage.validVerify(verificationCode);
-        var firstCardBalance = dashBoardPage.getCardBalance(0);
-        var secondCardBalance = dashBoardPage.getCardBalance(1);
-
-        int summaToDeposit = 200;
-        int firstCardBalanceExpected = firstCardBalance - summaToDeposit;
-        int secondCardBalanceExpected = secondCardBalance + summaToDeposit;
-
-        dashBoardPage.chooseCardForTransfer(1);
-        var transferMoneyPage = new TransferMoneyPage();
-        transferMoneyPage.moneyTransfer(summaToDeposit, firstCardNumber);
-
-        Assertions.assertEquals(firstCardBalanceExpected, dashBoardPage.getCardBalance(0));
-        Assertions.assertEquals(secondCardBalanceExpected, dashBoardPage.getCardBalance(1));
-
-    }
-
-
 }
