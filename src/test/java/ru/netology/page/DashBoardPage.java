@@ -34,7 +34,7 @@ public class DashBoardPage {
     }
 
     public TransferMoneyPage chooseCardForTransfer(int index) { //выбор карты для пополнения
-        $$("[data-test-id='action-deposit']").get(0).click();
+        $$("[data-test-id='action-deposit']").get(index).click();
         return new TransferMoneyPage();
     }
 
