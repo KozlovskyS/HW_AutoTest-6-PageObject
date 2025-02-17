@@ -74,12 +74,11 @@ public class MoneyTransferTest {
         var secondCardBalance = dashBoardPage.getCardBalance(1);
 
         int summaToDeposit = DataHelper.generationInvalidAmount(secondCardBalance);
-        int firstCardBalanceExpected = firstCardBalance + summaToDeposit;
-        int secondCardBalanceExpected = secondCardBalance - summaToDeposit;
 
         var transferMoneyPage = dashBoardPage.chooseCardForTransfer(0);
         transferMoneyPage.moneyTransfer(summaToDeposit, secondCardNumber);
 
-        transferMoneyPage.findErrorMessage();
+        String errorMessage = "Ошибка! Сумма превышает баланс"; //таким должен быть текст сообщения
+        transferMoneyPage.findErrorMessage(errorMessage);
     }
 }

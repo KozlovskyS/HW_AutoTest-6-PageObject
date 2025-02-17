@@ -3,6 +3,8 @@ package ru.netology.page;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 
+import java.time.Duration;
+
 import static com.codeborne.selenide.Selenide.$;
 
 public class TransferMoneyPage {
@@ -12,19 +14,19 @@ public class TransferMoneyPage {
     private final SelenideElement cardNumberFromField = $("[data-test-id='from'] input");
     private final SelenideElement errorMessage = $(".notification__content");
 
-
     public TransferMoneyPage() {
         headerTransfer.shouldBe(Condition.visible);
     }
 
-    public DashBoardPage moneyTransfer(int amount, String cardNumberFrom) { //перевод с карты id=from суммы amount
+    public DashBoardPage moneyTransfer(int amount, String cardNumberFrom) { //перевод с карты from суммы amount
         amountField.setValue(String.valueOf(amount));
         cardNumberFromField.setValue(cardNumberFrom);
         chooseCardToDepositButton.click();
         return new DashBoardPage();
     }
 
-    public void findErrorMessage() {
-        errorMessage.shouldBe(Condition.visible);
+    public void findErrorMessage(String message) {
+        errorMessage.shouldBe(Condition.visible, Duration.ofSeconds(15))
+                .shouldBe(Condition.text(message));
     }
 }
